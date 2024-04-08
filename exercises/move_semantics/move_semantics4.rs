@@ -22,7 +22,7 @@ fn main() {
 fn fill_vec() -> Vec<i32> {
     let mut vec = Vec::new();
 
-    vec.push(22);
+    vec.push(22);  // 放入第一个元素之后，rust 可以自动推断 Vec 的类型
     vec.push(44);
     vec.push(66);
 
