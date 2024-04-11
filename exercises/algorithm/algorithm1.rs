@@ -2,13 +2,11 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
-
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
 use std::vec::*;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct Node<T> {
     val: T,
     next: Option<NonNull<Node<T>>>,
@@ -22,20 +20,20 @@ impl<T> Node<T> {
         }
     }
 }
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct LinkedList<T> {
     length: u32,
     start: Option<NonNull<Node<T>>>,
     end: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Default for LinkedList<T> {
+impl<T: PartialOrd + Clone> Default for LinkedList<T> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> LinkedList<T> {
+impl<T: PartialOrd + Clone> LinkedList<T> {
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -71,12 +69,33 @@ impl<T> LinkedList<T> {
     }
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
 	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+        let mut list_c = Self::new();
+        unsafe {
+            let mut now_a = list_a.start;
+            let mut now_b = list_b.start;
+            while now_a != None && now_b != None {
+                let node_a = now_a.unwrap().as_ref();
+                let node_b = now_b.unwrap().as_ref();
+                if node_a.val < node_b.val {
+                    list_c.add(node_a.val.clone());
+                    now_a = node_a.next;
+                } else {
+                    list_c.add(node_b.val.clone());
+                    now_b = node_b.next;
+                }
+            }
+            while now_a != None {
+                let node_a = now_a.unwrap().as_ref();
+                list_c.add(node_a.val.clone());
+                now_a = now_a.unwrap().as_ref().next;
+            }
+            while now_b != None {
+                let node_b = now_b.unwrap().as_ref();
+                list_c.add(node_b.val.clone());
+                now_b = now_b.unwrap().as_ref().next;
+            }
         }
+        list_c
 	}
 }
 
